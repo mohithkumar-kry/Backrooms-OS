@@ -1,139 +1,105 @@
-// ---- Clock ----
-function updateTime() {
-  var currentTime = new Date().toLocaleString();
-  var Timetext = document.querySelector("#timeElement");
-  Timetext.innerHTML = currentTime;
-}
-setInterval(updateTime, 1000);
-updateTime();
+document.addEventListener("DOMContentLoaded", function () {
 
-// ---- Dragging (targets the real header id directly) ----
-dragElement(document.getElementById("window"), "mydivheader");
+  // ---- Clock ----
+  function updateTime() {
+    var currentTime = new Date().toLocaleString();
+    var Timetext = document.querySelector("#timeElement");
+    if (Timetext) Timetext.innerHTML = currentTime;
+  }
+  setInterval(updateTime, 1000);
+  updateTime();
 
-function dragElement(element, headerId) {
-  var initialX = 0;
-  var initialY = 0;
-  var currentX = 0;
-  var currentY = 0;
+  // ---- Dragging (targets the real header id directly) ----
+  var windowEl = document.getElementById("window");
+  if (windowEl) {
+    dragElement(windowEl, "mydivheader");
+  }
 
-  var header = headerId ? document.getElementById(headerId) : null;
+  function dragElement(element, headerId) {
+    var initialX = 0, initialY = 0, currentX = 0, currentY = 0;
+    var header = headerId ? document.getElementById(headerId) : null;
 
-  if (header) {
+    if (header) {
+      header.onmousedown = startDragging;
+    } else {
+      element.onmousedown = startDragging;
+    }
+
+    function startDragging(e) {
+      e = e || window.event;
+      e.preventDefault();
+      initialX = e.clientX;
+      initialY = e.clientY;
+      document.onmouseup = stopDragging;
+      document.onmousemove = elementDrag;
+    }
+
+    function elementDrag(e) {
+      e = e || window.event;
+      e.preventDefault();
+      currentX = initialX - e.clientX;
+      currentY = initialY - e.clientY;
+      initialX = e.clientX;
+      initialY = e.clientY;
+      element.style.top = (element.offsetTop - currentY) + "px";
+      element.style.left = (element.offsetLeft - currentX) + "px";
+    }
+
+    function stopDragging() {
+      document.onmouseup = null;
+      document.onmousemove = null;
+    }
+  }
+
+  // drag variant that takes the header element directly (no id lookup needed)
+  function dragElementDirect(element, header) {
+    var initialX = 0, initialY = 0, currentX = 0, currentY = 0;
+
     header.onmousedown = startDragging;
-  } else {
-    element.onmousedown = startDragging;
+
+    function startDragging(e) {
+      e.preventDefault();
+      initialX = e.clientX;
+      initialY = e.clientY;
+      document.onmouseup = stopDragging;
+      document.onmousemove = drag;
+    }
+
+    function drag(e) {
+      e.preventDefault();
+      currentX = initialX - e.clientX;
+      currentY = initialY - e.clientY;
+      initialX = e.clientX;
+      initialY = e.clientY;
+      element.style.top = (element.offsetTop - currentY) + "px";
+      element.style.left = (element.offsetLeft - currentX) + "px";
+    }
+
+    function stopDragging() {
+      document.onmouseup = null;
+      document.onmousemove = null;
+    }
   }
 
-  function startDragging(e) {
-    e = e || window.event;
-    e.preventDefault();
-    initialX = e.clientX;
-    initialY = e.clientY;
-    document.onmouseup = stopDragging;
-    document.onmousemove = elementDrag;
+  // ---- Window open/close ----
+  var welcomeScreen = document.querySelector("#window");
+  var welcomeScreenClose = document.querySelector("#welcomeclose");
+  var welcomeOpenBtn = document.querySelector("#welcomeopen");
+
+  function closeWindow(element) {
+    if (element) element.style.display = "none";
   }
 
-  function elementDrag(e) {
-    e = e || window.event;
-    e.preventDefault();
-    currentX = initialX - e.clientX;
-    currentY = initialY - e.clientY;
-    initialX = e.clientX;
-    initialY = e.clientY;
-    element.style.top = (element.offsetTop - currentY) + "px";
-    element.style.left = (element.offsetLeft - currentX) + "px";
+  function openWindow(element) {
+    if (element) element.style.display = "flex";
   }
 
-  function stopDragging() {
-    document.onmouseup = null;
-    document.onmousemove = null;
-  }
-}
-
-// ---- Window open/close ----
-var welcomeScreen = document.querySelector("#window");
-var welcomeScreenClose = document.querySelector("#welcomeclose");
-
-function closeWindow(element) {
-  element.style.display = "none";
-}
-
-function openWindow(element) {
-  element.style.display = "flex";
-}
-
-welcomeScreenClose.addEventListener("click", function() {
-  closeWindow(welcomeScreen);
-});
-
-// ---- Start-style dropdown menu (Dream_oS button) ----
-var startMenu = document.createElement("div");
-startMenu.id = "startMenu";
-startMenu.style.display = "none";
-
-var menuItemsContainer = document.createElement("div");
-menuItemsContainer.id = "startMenuItems";
-
-  var menuItems = [
-      { label: "Open Dream OS", icon: "🖥️", action: function () { openWindow(welcomeScreen); } },
-      { label: "Calculator", icon: "🧮", action: function () { openCalculator(); } },
-      { label: "Notepad", icon: "📝", action: function () { openNotepad(); } },
-      { label: "YouTube", icon: "▶️", action: function () { openYouTube(); } },
-      { label: "About", icon: "ℹ️", action: function () { alert("Dream_oS v1.0"); } },
-      {
-        label: "Shut Down", icon: "⏻", divider: true, action: function () {
-          var body = document.getElementById("bodystyle");
-          if (body) {
-            body.innerHTML =
-              "<h1 style='color:white;text-align:center;margin-top:200px;'>It's now safe to close this tab.</h1>";
-          }
-        }
-      }
-    ];
-
-menuItems.forEach(function(item) {
-  if (item.divider) {
-    var divider = document.createElement("div");
-    divider.className = "menuDivider";
-    menuItemsContainer.appendChild(divider);
+  if (welcomeScreenClose) {
+    welcomeScreenClose.addEventListener("click", function () {
+      closeWindow(welcomeScreen);
+    });
   }
 
-  var menuItem = document.createElement("div");
-  menuItem.className = "startMenuItem";
-
-  var icon = document.createElement("span");
-  icon.className = "menuIcon";
-  icon.textContent = item.icon;
-
-  var label = document.createElement("span");
-  label.textContent = item.label;
-
-  menuItem.appendChild(icon);
-  menuItem.appendChild(label);
-
-  menuItem.onclick = function() {
-    item.action();
-    startMenu.style.display = "none";
-  };
-
-  menuItemsContainer.appendChild(menuItem);
-});
-
-startMenu.appendChild(menuItemsContainer);
-document.body.appendChild(startMenu);
-
-document.getElementById("welcomeopen").addEventListener("click", function(e) {
-  e.stopPropagation();
-  startMenu.style.display = startMenu.style.display === "none" ? "flex" : "none";
-
-  var rect = this.getBoundingClientRect();
-  startMenu.style.top = rect.bottom + "px";
-  startMenu.style.left = rect.left + "px";
-});
-
-document.addEventListener("click", function() {
-  startMenu.style.display = "none";
-});
   // ---- Generic app window creator ----
   function createAppWindow(title, contentHTML, options) {
     options = options || {};
@@ -168,40 +134,9 @@ document.addEventListener("click", function() {
     win.appendChild(body);
     document.body.appendChild(win);
 
-    // reuse the same drag logic, targeting this window's own header
     dragElementDirect(win, header);
 
     return win;
-  }
-
-  // drag variant that takes the header element directly (no id lookup needed)
-  function dragElementDirect(element, header) {
-    var initialX = 0, initialY = 0, currentX = 0, currentY = 0;
-
-    header.onmousedown = startDragging;
-
-    function startDragging(e) {
-      e.preventDefault();
-      initialX = e.clientX;
-      initialY = e.clientY;
-      document.onmouseup = stopDragging;
-      document.onmousemove = drag;
-    }
-
-    function drag(e) {
-      e.preventDefault();
-      currentX = initialX - e.clientX;
-      currentY = initialY - e.clientY;
-      initialX = e.clientX;
-      initialY = e.clientY;
-      element.style.top = (element.offsetTop - currentY) + "px";
-      element.style.left = (element.offsetLeft - currentX) + "px";
-    }
-
-    function stopDragging() {
-      document.onmouseup = null;
-      document.onmousemove = null;
-    }
   }
 
   // ---- Calculator app ----
@@ -244,10 +179,193 @@ document.addEventListener("click", function() {
     createAppWindow("Notepad", html, { top: 160, left: 420, width: 260 });
   }
 
-  // ---- YouTube app (opens embedded video window) ----
+  // ---- YouTube app ----
   function openYouTube() {
     var html =
       '<iframe width="100%" height="180" src="https://www.youtube.com/embed?listType=user_uploads" ' +
       'frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>';
     createAppWindow("YouTube", html, { top: 130, left: 300, width: 320 });
   }
+
+  // ---- Jumpscare sequence ----
+  function startJumpscare() {
+    document.body.classList.add("jumpscare-shake");
+
+    var overlay = document.createElement("div");
+    overlay.id = "jumpscareOverlay";
+    document.body.appendChild(overlay);
+
+    var message = "U SHOULDNT HAVE CLICKED THIS";
+    var textCount = 0;
+    var maxTexts = 8;
+
+    var textInterval = setInterval(function () {
+      var text = document.createElement("div");
+      text.className = "jumpscare-text";
+      text.textContent = message;
+      text.style.top = Math.random() * 90 + "%";
+      text.style.left = "-400px";
+      document.body.appendChild(text);
+
+      var pos = -400;
+      var moveInterval = setInterval(function () {
+        pos += 40;
+        text.style.left = pos + "px";
+        if (pos > window.innerWidth + 400) {
+          clearInterval(moveInterval);
+          text.remove();
+        }
+      }, 16);
+
+      textCount++;
+      if (textCount >= maxTexts) {
+        clearInterval(textInterval);
+        setTimeout(spawnEscapeWindows, 500);
+      }
+    }, 400);
+  }
+
+  function spawnEscapeWindows() {
+    var windowCount = 0;
+    var maxWindows = 10;
+
+    var spawnInterval = setInterval(function () {
+      var win = document.createElement("div");
+      win.className = "escape-window";
+      win.style.top = Math.random() * (window.innerHeight - 100) + "px";
+      win.style.left = Math.random() * (window.innerWidth - 200) + "px";
+      win.innerHTML =
+        '<div class="escape-window-header">EXIT</div>' +
+        '<div class="escape-window-body">THERE IS NO ESCAPE</div>';
+      document.body.appendChild(win);
+
+      var jitter = setInterval(function () {
+        win.style.top = (parseFloat(win.style.top) + (Math.random() * 20 - 10)) + "px";
+        win.style.left = (parseFloat(win.style.left) + (Math.random() * 20 - 10)) + "px";
+      }, 100);
+      win.dataset.jitterId = jitter;
+
+      windowCount++;
+      if (windowCount >= maxWindows) {
+        clearInterval(spawnInterval);
+        setTimeout(endJumpscare, 1500);
+      }
+    }, 250);
+  }
+
+  function endJumpscare() {
+    document.body.classList.remove("jumpscare-shake");
+    var overlay = document.getElementById("jumpscareOverlay");
+    if (overlay) overlay.remove();
+
+    document.querySelectorAll(".escape-window").forEach(function (w) { w.remove(); });
+    document.querySelectorAll(".jumpscare-text").forEach(function (t) { t.remove(); });
+
+    var holdOverlay = document.createElement("div");
+    holdOverlay.id = "holdMyHandOverlay";
+
+    var win = document.createElement("div");
+    win.className = "escape-window";
+    win.style.position = "static";
+    win.innerHTML =
+      '<div class="escape-window-header">???</div>' +
+      '<div class="escape-window-body">HOLD MY HAND<br><br><button id="holdYesBtn">yes</button></div>';
+
+    holdOverlay.appendChild(win);
+    document.body.appendChild(holdOverlay);
+
+    document.getElementById("holdYesBtn").addEventListener("click", function () {
+      holdOverlay.remove();
+      showBlackout();
+    });
+  }
+
+  function showBlackout() {
+    var blackout = document.createElement("div");
+    blackout.id = "blackoutScreen";
+    blackout.textContent = "You are safe for now.";
+    document.body.appendChild(blackout);
+
+    requestAnimationFrame(function () {
+      blackout.classList.add("show");
+    });
+
+    setTimeout(function () {
+      blackout.remove();
+      openWindow(welcomeScreen);
+    }, 2500);
+  }
+
+  // ---- Start-style dropdown menu (Dream_oS button) ----
+  if (welcomeOpenBtn) {
+    var startMenu = document.createElement("div");
+    startMenu.id = "startMenu";
+    startMenu.style.display = "none";
+
+    var menuItemsContainer = document.createElement("div");
+    menuItemsContainer.id = "startMenuItems";
+
+    var menuItems = [
+      { label: "Open Dream OS", icon: "🖥️", action: function () { openWindow(welcomeScreen); } },
+      { label: "Calculator", icon: "🧮", action: function () { openCalculator(); } },
+      { label: "Notepad", icon: "📝", action: function () { openNotepad(); } },
+      { label: "YouTube", icon: "▶️", action: function () { openYouTube(); } },
+      { label: "About", icon: "ℹ️", action: function () { alert("Dream_oS v1.0"); } },
+      { label: "Don't Click", icon: "⚠️", action: function () { startJumpscare(); } },
+      {
+        label: "Shut Down", icon: "⏻", divider: true, action: function () {
+          var body = document.getElementById("bodystyle");
+          if (body) {
+            body.innerHTML =
+              "<h1 style='color:white;text-align:center;margin-top:200px;'>It's now safe to close this tab.</h1>";
+          }
+        }
+      }
+    ];
+
+    menuItems.forEach(function (item) {
+      if (item.divider) {
+        var divider = document.createElement("div");
+        divider.className = "menuDivider";
+        menuItemsContainer.appendChild(divider);
+      }
+
+      var menuItem = document.createElement("div");
+      menuItem.className = "startMenuItem";
+
+      var icon = document.createElement("span");
+      icon.className = "menuIcon";
+      icon.textContent = item.icon;
+
+      var label = document.createElement("span");
+      label.textContent = item.label;
+
+      menuItem.appendChild(icon);
+      menuItem.appendChild(label);
+
+      menuItem.onclick = function () {
+        item.action();
+        startMenu.style.display = "none";
+      };
+
+      menuItemsContainer.appendChild(menuItem);
+    });
+
+    startMenu.appendChild(menuItemsContainer);
+    document.body.appendChild(startMenu);
+
+    welcomeOpenBtn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      startMenu.style.display = startMenu.style.display === "none" ? "flex" : "none";
+
+      var rect = this.getBoundingClientRect();
+      startMenu.style.top = rect.bottom + "px";
+      startMenu.style.left = rect.left + "px";
+    });
+
+    document.addEventListener("click", function () {
+      startMenu.style.display = "none";
+    });
+  }
+
+});
