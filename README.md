@@ -23,6 +23,11 @@
 - 🎨 CSS 
 - ⚡ Vanilla JavaScript (no libraries)
 
+##How I made it?:
+-Made using javascript and css mostly.
+-Used AI to create a special feature that has yet to get audio version.
+-This is a V1 of Backroom OS, many more features have been planned for V2
+
 ## 🎯 Go to the link below to test it out urself!:
    https://mohithkumar-kry.github.io/Backrooms-OS/
    (sounds haven't been added in V1)
