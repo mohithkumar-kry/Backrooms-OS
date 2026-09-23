@@ -433,3 +433,296 @@ body.jumpscare-shake {
 #blackoutScreen.show {
   opacity: 1;
 }
+/* ===== Regret message (2nd shutdown click) ===== */
+@keyframes slamIn {
+  0% { transform: scale(3); opacity: 0; }
+  50% { transform: scale(0.9); opacity: 1; }
+  70% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+@keyframes textShake {
+  0% { transform: translate(0,0) rotate(0deg); }
+  20% { transform: translate(-6px,4px) rotate(-2deg); }
+  40% { transform: translate(6px,-4px) rotate(2deg); }
+  60% { transform: translate(-5px,-3px) rotate(-1deg); }
+  80% { transform: translate(5px,3px) rotate(1deg); }
+  100% { transform: translate(0,0) rotate(0deg); }
+}
+#regretOverlay {
+  position: fixed; top:0; left:0; width:100%; height:100%;
+  background: rgba(0,0,0,0.9);
+  display:flex; align-items:center; justify-content:center;
+  z-index: 100002;
+}
+#regretText {
+  color:#ff0000; font-family:"Tahoma",sans-serif; font-weight:bold;
+  font-size: 34px; text-align:center; text-shadow: 0 0 15px red;
+  animation: slamIn 0.4s ease-out, textShake 0.12s infinite 0.4s;
+  padding: 20px;
+}
+
+/* ===== Final shutdown sequence (3rd click) ===== */
+#finalScareOverlay {
+  position: fixed; top:0; left:0; width:100%; height:100%;
+  background:#000; overflow:hidden; z-index: 100003;
+}
+.eye-icon {
+  position:absolute; font-size:40px; opacity:0.85;
+  filter: drop-shadow(0 0 4px #fff);
+}
+.stack-error-window {
+  position:absolute;
+  background:#c0c0c0; border:2px solid #000; width:200px;
+  font-family:"Tahoma",sans-serif; font-size:12px;
+  box-shadow: inset -1px -1px 0 #808080, inset 1px 1px 0 #fff;
+  animation: textShake 0.1s infinite;
+}
+.stack-error-header {
+  background: linear-gradient(to right,#000080,#1084d0);
+  color:#fff; font-weight:bold; padding:2px 6px;
+  display:flex; justify-content:space-between;
+}
+.stack-error-body { padding:8px; text-align:center; }
+.stack-error-body button {
+  margin-top:6px; background:#c0c0c0; border:1px solid #000; padding:2px 10px;
+}
+.black-figure {
+  position:absolute; bottom:0; left:50%; transform:translateX(-50%);
+  width:120px; height:320px;
+  background: radial-gradient(circle at 50% 15%, #111 0 25px, transparent 26px),
+              linear-gradient(#000,#000);
+  clip-path: polygon(35% 0%, 65% 0%, 60% 20%, 75% 100%, 25% 100%, 40% 20%);
+  opacity:0; transition: opacity 2s ease-in;
+}
+.black-figure.show { opacity:1; }
+
+/* ===== Custom shutdown screen ===== */
+#customShutdown {
+  position: fixed; top:0; left:0; width:100%; height:100%;
+  background:#000; color:#0f0; font-family:"Courier New",monospace;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  z-index: 100004; opacity:0; transition: opacity 1s ease;
+}
+#customShutdown.show { opacity:1; }
+#customShutdown .blink { animation: blinkCursor 1s steps(1) infinite; }
+@keyframes blinkCursor { 50% { opacity:0; } }
+
+/* ===== Insta scroller app ===== */
+#instaFeed {
+  width: 100%; height: 220px; overflow-y: scroll; scrollbar-width:none;
+  border: 1px solid #808080; background:#fff;
+}
+#instaFeed::-webkit-scrollbar { display:none; }
+.insta-post {
+  border-bottom: 1px solid #ccc; padding: 8px; font-family: sans-serif; font-size: 12px;
+}
+.insta-post-img {
+  width:100%; height:120px; margin-bottom:6px; border-radius:4px;
+}
+@keyframes glitchSkew {
+  0% { transform: skew(0deg); }
+  20% { transform: skew(3deg) translateX(-5px); }
+  40% { transform: skew(-4deg) translateX(5px); }
+  60% { transform: skew(2deg) translateX(-3px); }
+  80% { transform: skew(-2deg) translateX(3px); }
+  100% { transform: skew(0deg); }
+}
+@keyframes glitchColor {
+  0%, 100% { text-shadow: 2px 0 red, -2px 0 cyan; }
+  50% { text-shadow: -3px 0 red, 3px 0 cyan; }
+}
+@keyframes staticFlicker {
+  0% { opacity: 0.15; }
+  50% { opacity: 0.35; }
+  100% { opacity: 0.1; }
+}
+@keyframes intenseShake {
+  0% { transform: translate(0,0); }
+  10% { transform: translate(-15px,10px) rotate(-1deg); }
+  20% { transform: translate(15px,-10px) rotate(1deg); }
+  30% { transform: translate(-12px,12px); }
+  40% { transform: translate(12px,-12px); }
+  50% { transform: translate(-15px,-8px); }
+  60% { transform: translate(15px,8px); }
+  70% { transform: translate(-10px,10px); }
+  80% { transform: translate(10px,-10px); }
+  90% { transform: translate(-8px,6px); }
+  100% { transform: translate(0,0); }
+}
+body.intense-shake {
+  animation: intenseShake 0.08s infinite;
+}
+
+#customShutdown {
+  position: fixed; top:0; left:0; width:100%; height:100%;
+  background:#000; color:#0f0; font-family:"Courier New",monospace;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  z-index: 100004; opacity:0; transition: opacity 0.3s ease;
+  overflow: hidden;
+}
+#customShutdown.show { opacity:1; }
+#customShutdown.glitching #shutdownText {
+  animation: glitchSkew 0.15s infinite, glitchColor 0.1s infinite;
+}
+#customShutdown .blink { animation: blinkCursor 0.5s steps(1) infinite; }
+@keyframes blinkCursor { 50% { opacity:0; } }
+
+#staticNoise {
+  position:absolute; top:0; left:0; width:100%; height:100%;
+  background-image: repeating-linear-gradient(0deg, rgba(255,255,255,0.05) 0px, transparent 1px, transparent 2px, rgba(255,255,255,0.05) 3px);
+  animation: staticFlicker 0.1s infinite;
+  pointer-events: none;
+}
+
+#shutdownText {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  font-size: 20px;
+}
+
+.data-corrupt {
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
+}
+@keyframes shutdownFade {
+  0% { filter: brightness(1); transform: scale(1); }
+  60% { filter: brightness(0.3); transform: scale(0.98); }
+  100% { filter: brightness(0); transform: scale(0.9); }
+}
+#shuttingDownScreen {
+  position: fixed; top:0; left:0; width:100%; height:100%;
+  background:#000; color:#ccc; font-family:"Tahoma",sans-serif;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  z-index: 100005; opacity:0; transition: opacity 0.6s ease;
+}
+#shuttingDownScreen.show { opacity:1; }
+#shuttingDownScreen .spinner {
+  width:24px; height:24px; border:3px solid #444; border-top-color:#ccc;
+  border-radius:50%; animation: spin 0.8s linear infinite; margin-top:12px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+#powerOffScreen {
+  position: fixed; top:0; left:0; width:100%; height:100%;
+  background:#000; z-index: 100005;
+  display:flex; align-items:center; justify-content:center;
+  cursor: pointer;
+}
+#powerOffScreen .power-btn {
+  width:60px; height:60px; border-radius:50%;
+  border:3px solid #333; color:#333;
+  display:flex; align-items:center; justify-content:center;
+  font-size:28px; transition: all 0.3s ease;
+}
+#powerOffScreen:hover .power-btn {
+  border-color:#0f0; color:#0f0;
+  box-shadow: 0 0 15px #0f0;
+}
+
+body.screen-off-fx {
+  animation: shutdownFade 1.2s forwards;
+}
+#snakeCanvas {
+  background: #000;
+  display: block;
+  margin: 0 auto;
+  border: 1px solid #0f0;
+}
+
+@keyframes snakeGlitchShake {
+  0% { transform: translate(0,0); }
+  20% { transform: translate(-4px,3px) skewX(2deg); }
+  40% { transform: translate(4px,-3px) skewX(-2deg); }
+  60% { transform: translate(-3px,-2px); }
+  80% { transform: translate(3px,2px); }
+  100% { transform: translate(0,0); }
+}
+
+@keyframes redPulse {
+  0%, 100% { background-color: rgba(150,0,0,0.3); }
+  50% { background-color: rgba(255,0,0,0.6); }
+}
+
+#snakeDeathOverlay {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 10;
+  animation: redPulse 0.3s infinite;
+}
+
+.snake-death-text {
+  position: absolute;
+  color: red;
+  font-family: monospace;
+  font-weight: bold;
+  z-index: 11;
+  text-shadow: 0 0 8px red;
+  animation: snakeGlitchShake 0.12s infinite;
+}
+
+#snakeCanvas.dying {
+  animation: snakeGlitchShake 0.1s infinite;
+}
+#snakeCanvas {
+  background: #000;
+  display: block;
+  margin: 0 auto;
+  border: 1px solid #0f0;
+}
+
+@keyframes snakeFullscreenShake {
+  0% { transform: translate(0,0); }
+  10% { transform: translate(-20px,15px); }
+  20% { transform: translate(20px,-15px); }
+  30% { transform: translate(-15px,20px); }
+  40% { transform: translate(15px,-20px); }
+  50% { transform: translate(-25px,-10px); }
+  60% { transform: translate(25px,10px); }
+  70% { transform: translate(-15px,15px); }
+  80% { transform: translate(15px,-15px); }
+  90% { transform: translate(-10px,8px); }
+  100% { transform: translate(0,0); }
+}
+
+body.snake-death-shake {
+  animation: snakeFullscreenShake 0.08s infinite;
+}
+
+#snakeFullscreenOverlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: #000;
+  z-index: 100010;
+  overflow: hidden;
+}
+
+#snakeFullCanvas {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.snake-blink-text {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  color: red;
+  font-family: "Tahoma", monospace;
+  font-weight: bold;
+  font-size: 48px;
+  text-shadow: 0 0 20px red, 0 0 40px red;
+  text-align: center;
+  z-index: 100011;
+  animation: hardBlink 0.15s steps(1) infinite;
+}
+
+@keyframes hardBlink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
