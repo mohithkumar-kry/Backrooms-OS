@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // drag variant that takes the header element directly (no id lookup needed)
+  // drag variant that takes the header element directly
   function dragElementDirect(element, header) {
     var initialX = 0, initialY = 0, currentX = 0, currentY = 0;
 
@@ -210,22 +210,18 @@ document.addEventListener("DOMContentLoaded", function () {
     var win = createAppWindow("Insta Feed", html, { top: 130, left: 300, width: 260 });
     var feed = win.querySelector("#instaFeed");
 
-    var scrollInterval = setInterval(function () {
-      feed.scrollTop += 1;
-      if (feed.scrollTop + feed.clientHeight >= feed.scrollHeight) {
-        feed.scrollTop = 0;
-      }
-    }, 40);
-
-    feed.addEventListener("mouseenter", function () { clearInterval(scrollInterval); });
-    feed.addEventListener("mouseleave", function () {
-      scrollInterval = setInterval(function () {
+    function startScroll() {
+      return setInterval(function () {
         feed.scrollTop += 1;
         if (feed.scrollTop + feed.clientHeight >= feed.scrollHeight) {
           feed.scrollTop = 0;
         }
       }, 40);
-    });
+    }
+
+    var scrollInterval = startScroll();
+    feed.addEventListener("mouseenter", function () { clearInterval(scrollInterval); });
+    feed.addEventListener("mouseleave", function () { scrollInterval = startScroll(); });
   }
 
   // ---- YouTube app ----
@@ -592,11 +588,11 @@ document.addEventListener("DOMContentLoaded", function () {
         '<div class="escape-window-body">THERE IS NO ESCAPE</div>';
       document.body.appendChild(win);
 
-      var jitter = setInterval(function () {
+      setInterval(function () {
+        if (!win.isConnected) return;
         win.style.top = (parseFloat(win.style.top) + (Math.random() * 20 - 10)) + "px";
         win.style.left = (parseFloat(win.style.left) + (Math.random() * 20 - 10)) + "px";
       }, 100);
-      win.dataset.jitterId = jitter;
 
       windowCount++;
       if (windowCount >= maxWindows) {
@@ -649,10 +645,15 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 2500);
   }
 
-  // ---- Shutdown sequence (escalating, with real power off/on) ----
+  // ---- Shutdown sequence ----
+  // Click 1: "Are you sure?" (Yes does NOT shut down)
+  // Click 2: shaky "ARE YOU SURE YOU WOULDN'T REGRET THIS?"
+  // Click 3: full scare (eyes, error stack, figure) -> glitch shutdown screen -> real power off
   var shutdownAttempts = 0;
+  var shutdownBusy = false;
 
   function handleShutdownClick() {
+    if (shutdownBusy) return;
     shutdownAttempts++;
     if (shutdownAttempts === 1) {
       showShutdownConfirm();
@@ -670,49 +671,19 @@ document.addEventListener("DOMContentLoaded", function () {
       '<div style="text-align:center;"><button id="sdYes">Yes</button> <button id="sdNo">No</button></div>',
       { top: 180, left: 380, width: 220 }
     );
+    // Yes just closes the dialog - it does NOT shut down (next click escalates)
     win.querySelector("#sdYes").onclick = function () {
       win.remove();
-      powerOffSequence();
     };
+    // No cancels and resets the escalation
     win.querySelector("#sdNo").onclick = function () {
       win.remove();
       shutdownAttempts = 0;
     };
   }
 
-  function powerOffSequence() {
-    document.body.classList.add("screen-off-fx");
-
-    var shutting = document.createElement("div");
-    shutting.id = "shuttingDownScreen";
-    shutting.innerHTML = "Shutting down...<div class='spinner'></div>";
-    document.body.appendChild(shutting);
-    requestAnimationFrame(function () { shutting.classList.add("show"); });
-
-    setTimeout(function () {
-      shutting.remove();
-      document.body.classList.remove("screen-off-fx");
-      showPowerOffScreen();
-    }, 1800);
-  }
-
-  function showPowerOffScreen() {
-    document.getElementById("bodystyle").style.visibility = "hidden";
-
-    var offScreen = document.createElement("div");
-    offScreen.id = "powerOffScreen";
-    offScreen.innerHTML = '<div class="power-btn">⏻</div>';
-    document.body.appendChild(offScreen);
-
-    offScreen.addEventListener("click", function () {
-      offScreen.remove();
-      document.getElementById("bodystyle").style.visibility = "visible";
-      shutdownAttempts = 0;
-      openWindow(welcomeScreen);
-    });
-  }
-
   function showRegretMessage() {
+    shutdownBusy = true;
     document.body.classList.add("jumpscare-shake");
     var overlay = document.createElement("div");
     overlay.id = "regretOverlay";
@@ -725,29 +696,34 @@ document.addEventListener("DOMContentLoaded", function () {
     setTimeout(function () {
       overlay.remove();
       document.body.classList.remove("jumpscare-shake");
+      shutdownBusy = false;
     }, 2800);
   }
 
   function startFinalShutdownScare() {
+    shutdownBusy = true;
     document.body.classList.add("jumpscare-shake");
     var overlay = document.createElement("div");
     overlay.id = "finalScareOverlay";
     document.body.appendChild(overlay);
 
+    // scatter eyes (put your image at images/eye.png)
     for (var i = 0; i < 25; i++) {
       var eye = document.createElement("img");
-      eye.src = "images/eye.png";
+      eye.src = "eye.jpg";
       eye.className = "eye-icon";
       eye.style.top = Math.random() * 90 + "%";
       eye.style.left = Math.random() * 90 + "%";
       overlay.appendChild(eye);
     }
 
+    // black figure fades in
     var figure = document.createElement("div");
     figure.className = "black-figure";
     overlay.appendChild(figure);
     setTimeout(function () { figure.classList.add("show"); }, 300);
 
+    // stack error windows
     var count = 0;
     var errInterval = setInterval(function () {
       var errWin = document.createElement("div");
@@ -800,8 +776,6 @@ document.addEventListener("DOMContentLoaded", function () {
       "WE SAW YOU LEAVE.",
       "<span class='data-corrupt'>DELETING YOUR FILES...</span>",
       "<span class='data-corrupt'>NOTEPAD.TXT — CORRUPTED</span>",
-      "JUST KIDDING.",
-      "COME BACK SOON."
     ];
 
     var i = 0;
@@ -820,11 +794,25 @@ document.addEventListener("DOMContentLoaded", function () {
         document.body.classList.remove("intense-shake");
         setTimeout(function () {
           screen.remove();
-          shutdownAttempts = 0;
-          openWindow(welcomeScreen);
+          showPowerOffScreen(); // now the PC is actually "off"
         }, 400);
       }, 1200);
     }
+  }
+
+  // Real power-off: black screen with a power button to turn it back on
+  function showPowerOffScreen() {
+    var offScreen = document.createElement("div");
+    offScreen.id = "powerOffScreen";
+    offScreen.innerHTML = '<div class="power-btn">⏻</div>';
+    document.body.appendChild(offScreen);
+
+    offScreen.addEventListener("click", function () {
+      offScreen.remove();
+      shutdownAttempts = 0;
+      shutdownBusy = false;
+      openWindow(welcomeScreen);
+    });
   }
 
   // ---- Start-style dropdown menu (Dream_oS button) ----
@@ -842,6 +830,7 @@ document.addEventListener("DOMContentLoaded", function () {
       { label: "Snake", icon: "🐍", action: function () { openSnake(); } },
       { label: "Notepad", icon: "📝", action: function () { openNotepad(); } },
       { label: "YouTube", icon: "▶️", action: function () { openYouTube(); } },
+      { label: "Insta Feed", icon: "📸", action: function () { openInstaScroller(); } },
       { label: "Timer", icon: "⏲️", action: function () { openTimer(); } },
       { label: "Stopwatch", icon: "⏱️", action: function () { openStopwatch(); } },
       { label: "About", icon: "ℹ️", action: function () { alert("Dream_oS v1.0"); } },

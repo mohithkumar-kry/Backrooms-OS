@@ -514,10 +514,16 @@ body.jumpscare-shake {
 }
 #instaFeed::-webkit-scrollbar { display:none; }
 .insta-post {
-  border-bottom: 1px solid #ccc; padding: 8px; font-family: sans-serif; font-size: 12px;
+  border-bottom: 1px solid #ccc; 
+  padding: 8px; 
+  font-family: sans-serif; 
+  font-size: 12px;
 }
 .insta-post-img {
-  width:100%; height:120px; margin-bottom:6px; border-radius:4px;
+  width:100%; 
+  height:120px; 
+  margin-bottom:6px; 
+  border-radius:4px;
 }
 @keyframes glitchSkew {
   0% { transform: skew(0deg); }
@@ -554,10 +560,21 @@ body.intense-shake {
 }
 
 #customShutdown {
-  position: fixed; top:0; left:0; width:100%; height:100%;
-  background:#000; color:#0f0; font-family:"Courier New",monospace;
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  z-index: 100004; opacity:0; transition: opacity 0.3s ease;
+  position: fixed;
+  top:0; 
+  left:0; 
+  width:100%; 
+  height:100%;
+  background:#000; 
+  color:#0f0; 
+  font-family:"Courier New",monospace;
+  display:flex; 
+  flex-direction:column; 
+  align-items:center; 
+  justify-content:center;
+  z-index: 100004; 
+  opacity:0; 
+  transition: opacity 0.3s ease;
   overflow: hidden;
 }
 #customShutdown.show { opacity:1; }
@@ -568,7 +585,11 @@ body.intense-shake {
 @keyframes blinkCursor { 50% { opacity:0; } }
 
 #staticNoise {
-  position:absolute; top:0; left:0; width:100%; height:100%;
+  position:absolute; 
+  top:0; 
+  left:0; 
+  width:100%; 
+  height:100%;
   background-image: repeating-linear-gradient(0deg, rgba(255,255,255,0.05) 0px, transparent 1px, transparent 2px, rgba(255,255,255,0.05) 3px);
   animation: staticFlicker 0.1s infinite;
   pointer-events: none;
@@ -592,10 +613,21 @@ body.intense-shake {
   100% { filter: brightness(0); transform: scale(0.9); }
 }
 #shuttingDownScreen {
-  position: fixed; top:0; left:0; width:100%; height:100%;
-  background:#000; color:#ccc; font-family:"Tahoma",sans-serif;
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  z-index: 100005; opacity:0; transition: opacity 0.6s ease;
+  position: fixed; 
+  top:0; 
+  left:0; 
+  width:100%; 
+  height:100%;
+  background:#000; 
+  color:#ccc; 
+  font-family:"Tahoma",sans-serif;
+  display:flex; 
+  flex-direction:column; 
+  align-items:center; 
+  justify-content:center;
+  z-index: 100005; 
+  opacity:0; 
+  transition: opacity 0.6s ease;
 }
 #shuttingDownScreen.show { opacity:1; }
 #shuttingDownScreen .spinner {
