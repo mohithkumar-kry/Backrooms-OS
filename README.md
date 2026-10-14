@@ -8,14 +8,12 @@
 
 ## 🧰 Built-in Apps
 
-| App | Icon | What it does |
-|-----|------|---------------|
-| Dream OS Welcome Window | 🖥️ | The default "Welcome to Dream OS" popup |
-| Calculator | 🧮 | Just Windows calc in retro style|
-| Notepad | 📝 | Type your Backrooms survival notes |
-| YouTube | ▶️ | Watch videos without leaving the desktop |
-| DOnt CliCk! | ℹ️ | Would u click tho? |
-| Shut Down | ⏻ | ... it's now safe to close this tab |
+| App | What it does |
+|-----|---------------|
+| Dream OS Welcome Window | The default "Welcome to Dream OS" popup |
+| Calculator | Just Windows calc in retro style|
+| Notepad | Type your Backrooms survival notes |
+| YouTube | Watch videos without leaving the desktop |
 
 ## 🛠️ Tech Stack
 
