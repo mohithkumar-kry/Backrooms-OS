@@ -1,15 +1,16 @@
-# 🖥️ Backrooms OS (Dream_oS)
+# Dream_oS
 
 > A nostalgic, retro Windows 95/98-style fake desktop OS — in the browser.
 > 
-## 🧰 Built-in Apps
+## Built-in Apps
 
 | App | What it does |
 |-----|---------------|
 | Dream OS Welcome Window | The default "Welcome to Dream OS" popup |
 | Calculator | Just Windows calc in retro style|
-| Notepad | Type your Backrooms survival notes |
-| YouTube | Watch videos without leaving the desktop |
+| Notepad | Notetaking with save feature|
+| YouTube | Watch videos without leaving the website|
++ Many more!
 
 ##  Tech Stack
 
