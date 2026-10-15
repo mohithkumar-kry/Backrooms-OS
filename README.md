@@ -1,11 +1,7 @@
 # 🖥️ Backrooms OS (Dream_oS)
 
 > A nostalgic, retro Windows 95/98-style fake desktop OS — in the browser.
-
-## ✨Unique Features
-- 🖱️ **Start-style dropdown menu** — click "Dream_oS" in the top bar to launch apps
-- 🎨 **Authentic beveled UI** — that classic 3D gray Windows look, made with pure CSS box-shadows.
-
+> 
 ## 🧰 Built-in Apps
 
 | App | What it does |
@@ -15,11 +11,11 @@
 | Notepad | Type your Backrooms survival notes |
 | YouTube | Watch videos without leaving the desktop |
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
-- 🧱 HTML
-- 🎨 CSS 
-- ⚡ Vanilla JavaScript (no libraries)
+-  HTML
+-  CSS 
+- Vanilla JavaScript (no libraries)
 
 ## How I made it
 - Made using javascript and css mostly.
